@@ -457,29 +457,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSortKey = 'puntaje_final'; // Ordenar por puntaje por defecto
     let sortDirection = 'desc';
 
-    const SCORING_WEIGHTS = {
-        equipo: 0.60, producto: 0.10, tesis_utec: 0.10,
-        oportunidad: 0.15, validacion: 0.05
-    };
+    let SCORING_WEIGHTS = {};
 
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('startAnalysis') === 'true') {
-        // MODO 1: Se acaba de subir un archivo, iniciamos análisis en tiempo real.
-        startRealtimeAnalysis();
-    } else {
-        // MODO 2: Carga normal de la página, buscamos datos en localStorage.
-        const stored = localStorage.getItem('startupResults');
-        if (stored) {
-            try {
-                startupData = JSON.parse(stored);
-                if (startupData.length > 0) {
-                    showResumeModal();
+    async function loadConfigAndInitialize() {
+        try {
+            const response = await fetch('/api/config/scoring-weights');
+            if (!response.ok) throw new Error('Failed to load config');
+            SCORING_WEIGHTS = await response.json();
+            console.log("Pesos cargados:", SCORING_WEIGHTS);
+            
+            // Ahora ejecuta la lógica que tenías al principio
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('startAnalysis') === 'true') {
+                startRealtimeAnalysis();
+            } else {
+                const stored = localStorage.getItem('startupResults');
+                if (stored) {
+                    startupData = JSON.parse(stored);
+                    if (startupData.length > 0) showResumeModal();
                 }
-            } catch (e) {
-                console.error("Error al parsear datos de localStorage", e);
-                localStorage.removeItem('startupResults');
             }
+        } catch (error) {
+            showToast('Error al cargar la configuración.', 'error');
         }
     }
 
@@ -619,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const scores = startup.dimensional_scores || {};
       let finalScore = 0;
       for (const key in SCORING_WEIGHTS) {
-        finalScore += (scores[key] || 0) * SCORING_WEIGHTS[key];
+        finalScore += (scores[key] || 0) * SCORING_WEIGHTS[key].peso;
       }
       startup.final_weighted_score = finalScore;
     }
@@ -986,6 +985,9 @@ tableBody.addEventListener('click', async (e) => {
       try { toast.style.animation = 'toast-out 160ms ease forwards'; } catch (e) {}
       setTimeout(() => { if (toast.parentElement) toast.parentElement.removeChild(toast); }, 200);
     }
+
+    loadConfigAndInitialize(); 
+
   });
 </script>
 </body>

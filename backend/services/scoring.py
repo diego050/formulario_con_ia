@@ -4,6 +4,7 @@ import time
 import google.generativeai as genai
 from typing import List, Dict
 import asyncio
+import re
 
 
 # --- CONFIGURACIÓN Y CONSTANTES ---
@@ -46,7 +47,7 @@ def get_llm_dimensional_scoring(startup_data: str, full_historical_portfolio: st
     }
 
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash-latest') # Usamos el modelo correcto
+        model = genai.GenerativeModel('gemini-2.0-flash-lite') # Usamos el modelo correcto
         status_hierarchy_prompt = "\n".join(f'- {s} (Nivel {d["score"]}/10): {d["description"]}' for s, d in STATUS_HIERARCHY.items())
         
         prompt = f"""
@@ -114,7 +115,15 @@ def get_llm_dimensional_scoring(startup_data: str, full_historical_portfolio: st
 
         if json_start != -1 and json_end != -1:
             json_text = text_response[json_start:json_end]
-            return json.loads(json_text)
+        
+            json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
+            
+            try:
+                return json.loads(json_text)
+            except json.JSONDecodeError as e:
+                print(f" -> ERROR: El JSON sigue siendo inválido después de la limpieza: {e}")
+                print(f" -> JSON problemático: {json_text}")
+                return default_response
         else:
             print(" -> ADVERTENCIA: No se encontró un JSON válido en la respuesta de la IA.")
             return default_response
@@ -164,8 +173,8 @@ async def run_scoring_loop(df_to_score: pd.DataFrame, df_context: pd.DataFrame, 
         print(f" -> Análisis completo para '{startup_name}'. Score: {result_row['final_weighted_score']}")
         results.append(result_row)
         
-        print(" -> Esperando 6 segundos para no exceder el límite de RPM...")
-        time.sleep(6)
+        print(" -> Esperando 31 segundos para no exceder el límite de RPM...")
+        time.sleep(31)
 
     return results
 
