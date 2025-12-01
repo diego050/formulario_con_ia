@@ -1,78 +1,306 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Analizador de Deal Flow con IA — Inicio</title>
     <meta name="description" content="Sube un CSV con postulaciones y obtén un scoring automático en un dashboard." />
     <style>
-        :root{
-            --bg: #0f1724; --surface: #0b1220; --card:#0f1724; --muted:#9aa6bf; --accent:#3b82f6;
-            --glass: rgba(255,255,255,0.04); --success:#16a34a; --danger:#ef4444; --radius:12px;
-            --max-width:1100px;
+        :root {
+            --bg: #0f1724;
+            --surface: #0b1220;
+            --card: #0f1724;
+            --muted: #9aa6bf;
+            --accent: #3b82f6;
+            --glass: rgba(255, 255, 255, 0.04);
+            --success: #16a34a;
+            --danger: #ef4444;
+            --radius: 12px;
+            --max-width: 1100px;
         }
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        body{
-            margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background:linear-gradient(180deg,#071024 0%, var(--bg) 60%); color:#e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-            display:flex; align-items:flex-start; justify-content:center; padding:36px 20px;
+
+        * {
+            box-sizing: border-box
         }
-        .container{width:100%; max-width:var(--max-width);}
 
-        header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px}
-        .brand{display:flex; align-items:center; gap:12px}
-        .logo{width:44px; height:44px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#2563eb,#7c3aed); box-shadow:0 6px 18px rgba(37,99,235,0.12); font-weight:800}
-        .brand h1{font-size:1.1rem; margin:0}
-        nav{display:flex; gap:10px; align-items:center}
-        .nav-link{color:var(--muted); text-decoration:none; font-weight:600; padding:8px 12px; border-radius:8px}
-        .nav-link:hover{background:rgba(255,255,255,0.02); color:#fff}
+        html,
+        body {
+            height: 100%
+        }
 
-        .hero{display:grid; grid-template-columns:1fr 420px; gap:28px; align-items:center; margin-bottom:28px}
-        .hero-card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:28px; border-radius:16px; box-shadow:0 10px 30px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.04)}
-        .eyebrow{display:inline-block; color:var(--accent); font-weight:700; font-size:0.78rem; background:rgba(59,130,246,0.08); padding:6px 10px; border-radius:999px}
-        h2{font-size:1.6rem; margin:12px 0 6px}
-        p.lead{color:var(--muted); margin:0 0 18px}
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg, #071024 0%, var(--bg) 60%);
+            color: #e6eef6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 36px 20px;
+        }
 
-        .features{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px}
-        .feature{background:var(--glass); padding:12px; border-radius:10px; color:var(--muted); font-size:0.92rem}
-        .feature strong{display:block; color:#fff; margin-bottom:6px}
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+            font-weight: 800
+        }
+
+        .brand h1 {
+            font-size: 1.1rem;
+            margin: 0
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.02);
+            color: #fff
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 28px;
+            align-items: center;
+            margin-bottom: 28px
+        }
+
+        .hero-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+
+        .eyebrow {
+            display: inline-block;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.78rem;
+            background: rgba(59, 130, 246, 0.08);
+            padding: 6px 10px;
+            border-radius: 999px
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            margin: 12px 0 6px
+        }
+
+        p.lead {
+            color: var(--muted);
+            margin: 0 0 18px
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px
+        }
+
+        .feature {
+            background: var(--glass);
+            padding: 12px;
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 0.92rem
+        }
+
+        .feature strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 6px
+        }
 
         /* form */
-        .uploader{display:flex; flex-direction:column; gap:12px}
-        label.filebox{display:flex; flex-direction:column; gap:8px; padding:14px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border-radius:12px; border:1px dashed rgba(255,255,255,0.04); cursor:pointer}
-        label.filebox input[type=file]{display:none}
-        .file-hint{color:var(--muted); font-size:0.9rem}
+        .uploader {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
 
-        .controls{display:flex; gap:10px; align-items:center}
-        .btn{background:var(--accent); color:white; border:none; padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer}
-        .btn.secondary{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04)}
-        .btn.ghost{background:rgba(255,255,255,0.03)}
-        .btn:disabled{opacity:0.5; cursor:not-allowed}
+        label.filebox {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.015));
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.04);
+            cursor: pointer
+        }
 
-        .status{font-size:0.95rem}
-        .note{color:var(--muted); font-size:0.9rem}
+        label.filebox input[type=file] {
+            display: none
+        }
+
+        .file-hint {
+            color: var(--muted);
+            font-size: 0.9rem
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+
+        .btn.ghost {
+            background: rgba(255, 255, 255, 0.03)
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed
+        }
+
+        .status {
+            font-size: 0.95rem
+        }
+
+        .note {
+            color: var(--muted);
+            font-size: 0.9rem
+        }
 
         /* right column preview */
-        .preview{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); color:var(--muted)}
-        .preview h3{margin:0 0 10px}
-        .stat{display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(255,255,255,0.03)}
+        .preview {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--muted)
+        }
 
-        footer{margin-top:28px; color:var(--muted); font-size:0.88rem; display:flex; justify-content:space-between; align-items:center}
+        .preview h3 {
+            margin: 0 0 10px
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.03)
+        }
+
+        footer {
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 0.88rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
 
         /* responsive */
-        @media (max-width:920px){ .hero{grid-template-columns:1fr; } .features{grid-template-columns:repeat(2,1fr);} }
-        @media (max-width:560px){ .features{grid-template-columns:1fr;} header{flex-direction:column; align-items:flex-start; gap:12px} }
+        @media (max-width:920px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width:560px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px
+            }
+        }
 
         /* subtle animations */
-        .fade-in{animation:fadeIn .42s ease both}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+        .fade-in {
+            animation: fadeIn .42s ease both
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
 
         /* accessible focus */
-        .btn:focus, .nav-link:focus, label.filebox:focus{outline:3px solid rgba(37,99,235,0.12); outline-offset:3px}
-
+        .btn:focus,
+        .nav-link:focus,
+        label.filebox:focus {
+            outline: 3px solid rgba(37, 99, 235, 0.12);
+            outline-offset: 3px
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -94,37 +322,51 @@
                 <div class="hero-card fade-in" aria-labelledby="hero-title">
                     <span class="eyebrow">Automatiza tu screening</span>
                     <h2 id="hero-title">Analiza postulaciones y obtén puntajes accionables</h2>
-                    <p class="lead">Sube un CSV con las startups y el motor calculará puntajes ponderados por dimensiones (Equipo, Tesis, Oportunidad, Validación). Revisa y ajusta en el dashboard.</p>
+                    <p class="lead">Sube un CSV con las startups y el motor calculará puntajes ponderados por
+                        dimensiones (Equipo, Tesis, Oportunidad, Validación). Revisa y ajusta en el dashboard.</p>
 
                     <form id="uploadForm" class="uploader" aria-describedby="upload-desc">
                         <label class="filebox" for="fileInput" tabindex="0">
-                            <strong>Selecciona o arrastra tu archivo CSV</strong>
-                            <span class="file-hint">Formato esperado: columnas con datos de cada startup (Nombre, Industria, puntajes, análisis cualitativo).</span>
-                            <input id="fileInput" name="new_deals_file" type="file" accept=".csv" aria-required="true">
+                            <strong>Selecciona o arrastra tu archivo CSV o Excel</strong>
+                            <span class="file-hint">Formato esperado: columnas con datos de cada startup (Nombre,
+                                Industria, puntajes, análisis cualitativo).</span>
+                            <input id="fileInput" name="new_deals_file" type="file" accept=".csv, .xlsx"
+                                aria-required="true">
                         </label>
 
-                        <div id="upload-desc" class="note">No compartimos tus datos. El resultado se guardará localmente en tu navegador.</div>
+                        <div id="upload-desc" class="note">No compartimos tus datos. El resultado se guardará localmente
+                            en tu navegador.</div>
 
                         <div class="controls">
                             <button id="analyzeBtn" class="btn" type="submit">Analizar y ver dashboard</button>
-                            <button id="clearBtn" type="button" class="btn ghost" title="Limpiar almacenamiento">Limpiar datos</button>
+                            <button id="clearBtn" type="button" class="btn ghost" title="Limpiar almacenamiento">Limpiar
+                                datos</button>
                         </div>
 
-                        <div role="status" aria-live="polite" class="status" id="statusArea" style="min-height:24px"></div>
+                        <div role="status" aria-live="polite" class="status" id="statusArea" style="min-height:24px">
+                        </div>
                     </form>
 
                     <div class="features" aria-hidden="false">
                         <div class="feature"><strong>Rápido</strong> Procesa cientos de filas en segundos.</div>
-                        <div class="feature"><strong>Editable</strong> Ajusta puntajes y justificaciones en el dashboard.</div>
+                        <div class="feature"><strong>Editable</strong> Ajusta puntajes y justificaciones en el
+                            dashboard.</div>
                         <div class="feature"><strong>Exportable</strong> Descarga resultados a Excel.</div>
                     </div>
                 </div>
 
                 <aside class="preview fade-in" aria-labelledby="preview-title">
                     <h3 id="preview-title">Vista rápida</h3>
-                    <div class="stat"><div>Startups</div><div id="stat-count">—</div></div>
-                    <div class="stat"><div>Puntaje promedio</div><div id="stat-avg">—</div></div>
-                    <div style="margin-top:12px" class="note">Después del análisis, serás llevado al dashboard donde podrás explorar y editar resultados.</div>
+                    <div class="stat">
+                        <div>Startups</div>
+                        <div id="stat-count">—</div>
+                    </div>
+                    <div class="stat">
+                        <div>Puntaje promedio</div>
+                        <div id="stat-avg">—</div>
+                    </div>
+                    <div style="margin-top:12px" class="note">Después del análisis, serás llevado al dashboard donde
+                        podrás explorar y editar resultados.</div>
                 </aside>
             </section>
 
@@ -139,8 +381,10 @@
 
             <section id="faq" class="hero-card fade-in" style="margin-top:12px">
                 <h3>Preguntas frecuentes</h3>
-                <p style="color:var(--muted)"><strong>¿Dónde se guardan los datos?</strong> En el almacenamiento local del navegador; no se publica en servidores por defecto.</p>
-                <p style="color:var(--muted)"><strong>¿Qué formato aceptan?</strong> CSV con columnas clave para nombre, industria, puntajes por dimensión y textos cualitativos.</p>
+                <p style="color:var(--muted)"><strong>¿Dónde se guardan los datos?</strong> En el almacenamiento local
+                    del navegador; no se publica en servidores por defecto.</p>
+                <p style="color:var(--muted)"><strong>¿Qué formato aceptan?</strong> CSV con columnas clave para nombre,
+                    industria, puntajes por dimensión y textos cualitativos.</p>
             </section>
         </main>
 
@@ -148,8 +392,8 @@
         </footer>
     </div>
 
-     <script>
-        (function(){
+    <script>
+        (function () {
             // Seleccionamos solo los elementos que SÍ existen en tu HTML
             const uploadForm = document.getElementById('uploadForm');
             const fileInput = document.getElementById('fileInput');
@@ -166,9 +410,9 @@
             if (fileInput) {
                 fileInput.addEventListener('change', () => {
                     const f = fileInput.files && fileInput.files[0];
-                    if (!f) { 
-                        if (statCount) statCount.textContent = '—'; 
-                        if (statAvg) statAvg.textContent = '—'; 
+                    if (!f) {
+                        if (statCount) statCount.textContent = '—';
+                        if (statAvg) statAvg.textContent = '—';
                         return;
                     }
                     if (statCount) statCount.textContent = 'listo para procesar';
@@ -182,9 +426,9 @@
                     localStorage.removeItem('startupResults');
                     if (statusArea) statusArea.textContent = 'Datos locales limpiados.';
                     if (fileInput) fileInput.value = ''; // Limpiar el archivo seleccionado
-                    if (statCount) statCount.textContent = '—'; 
+                    if (statCount) statCount.textContent = '—';
                     if (statAvg) statAvg.textContent = '—';
-                    setTimeout(()=> { if (statusArea) statusArea.textContent='' }, 2200);
+                    setTimeout(() => { if (statusArea) statusArea.textContent = '' }, 2200);
                 });
             }
 
@@ -194,31 +438,38 @@
                     e.preventDefault();
                     const file = fileInput.files && fileInput.files[0];
                     if (!file) {
-                        if (statusArea) statusArea.textContent = 'Por favor selecciona un archivo CSV.';
+                        if (statusArea) statusArea.textContent = 'Por favor selecciona un archivo CSV o Excel.';
                         return;
                     }
 
                     // Usamos sessionStorage para pasar el archivo a la página del dashboard
                     const reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = function (event) {
                         sessionStorage.setItem('analysisFileContent', event.target.result);
                         sessionStorage.setItem('analysisFileName', file.name);
                         // Redirigimos al dashboard con un parámetro para que sepa que debe empezar a analizar
                         window.location.href = 'dashboard.html?startAnalysis=true';
                     };
-                    reader.readAsText(file);
+
+                    // ¡CAMBIO! Usamos readAsDataURL SOLO para Excel (binario). Para CSV usamos texto plano como antes.
+                    // Esto evita problemas si el dashboard no decodifica bien el base64 para CSVs.
+                    if (file.name.toLowerCase().endsWith('.xlsx')) {
+                        reader.readAsDataURL(file);
+                    } else {
+                        reader.readAsText(file);
+                    }
 
                     if (analyzeBtn) analyzeBtn.disabled = true;
                     if (statusArea) statusArea.textContent = 'Iniciando, serás redirigido al dashboard...';
                 });
             }
-            
+
             // 4. Accesibilidad: permitir usar "Enter" en la etiqueta del archivo
-            if(fileLabel && fileInput) {
+            if (fileLabel && fileInput) {
                 fileLabel.addEventListener('keydown', (ev) => {
-                    if (ev.key === 'Enter' || ev.key === ' ') { 
-                        ev.preventDefault(); 
-                        fileInput.click(); 
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        fileInput.click();
                     }
                 });
             }
@@ -226,4 +477,5 @@
         })();
     </script>
 </body>
+
 </html>
